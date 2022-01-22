@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => 'Colbeh\Logs\Controllers'], function () {
+Route::group(['namespace' => 'Colbeh\Logs\Controllers','middleware'=>'web'], function () {
 //	Route::get('/', ['as' => 'bmi_path', 'uses' => 'ConstController@index']);
 	Route::get('log-viewer', "LogViewController@index");
 
