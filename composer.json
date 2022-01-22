@@ -4,8 +4,8 @@
     "type":"laravel-package",
     "keywords":[
         "laravel",
-        "migration",
-        "database"
+        "log",
+        "daily-logs"
     ],
     "license":"MIT",
     "authors":[

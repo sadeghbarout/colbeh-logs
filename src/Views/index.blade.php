@@ -39,7 +39,7 @@
                             <td :class="'alert alert-'+(getClass(file.size))">@{{file.size_text}}</td>
                             <td>
                                 <button @click="getFiles(file)" class="btn btn-outline-primary btn-sm" v-if="file.is_dir == true">Files</button>
-                                <a target="_blank" :href="'log-helper/show/'+path+'/'+file.name" class="btn btn-outline-primary btn-sm" v-if="file.is_dir == false ">View</a>
+                                <a target="_blank" :href="'log-viewer/show/'+path+'/'+file.name" class="btn btn-outline-primary btn-sm" v-if="file.is_dir == false ">View</a>
                                 <button @click="deleteFolder(file, index)" class="btn btn-outline-danger btn-sm">Delete</button>
                             </td>
                         </tr>
@@ -82,7 +82,7 @@
                 if(res == false)
                     return;
 
-                axios.delete('/log-helper/delete',{
+                axios.delete('/log-viewer/delete',{
                     params:{
                         'path':this.path,
                         'name':folder.name,
@@ -97,7 +97,7 @@
 
 
             getFiles(file){
-                axios.get('/log-helper/file',{
+                axios.get('/log-viewer/file',{
                     params:{
                         'path':file.name,
                     }

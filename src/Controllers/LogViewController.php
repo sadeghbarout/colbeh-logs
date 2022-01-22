@@ -280,6 +280,7 @@ class LogViewController {
 
 
 	private function checkPermission() {
+//		return true;
 		if (auth('web')->user() == null)
 			abort(403);
 

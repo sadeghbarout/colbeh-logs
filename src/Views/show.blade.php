@@ -137,7 +137,7 @@
                     this.requests=[];
 
                 this.isLoadeing=true;
-                axios.get('/log-helper/show-ajax',{
+                axios.get('/log-viewer/show-ajax',{
                     params:{
                         'path':this.path,
                         'search':this.search,
