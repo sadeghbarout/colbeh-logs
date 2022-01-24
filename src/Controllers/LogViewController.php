@@ -17,6 +17,7 @@ class LogViewController {
 
 		$this->checkPermission();
 		$path = request('path', '');
+		$justErrors = request('just_errors');
 
 		$fullPath = storage_path('logs/dailylogs') . "/" . $path;
 		$files = scandir($fullPath);
@@ -28,6 +29,13 @@ class LogViewController {
 
 		$filesArray = [];
 		foreach ($files as $file) {
+
+			if($justErrors=='true'){
+				$hasError=$this->checkFileHasError( "$fullPath/$file");
+				if(!$hasError)
+					continue;
+			}
+
 			$a["name"] = $file;
 			$a["size"] = ($this->dirSize2($fullPath . '/', $file));
 			$a["size_text"] = $this->sizePrettifier($a["size"]);
@@ -43,6 +51,12 @@ class LogViewController {
 
 		return $data;
 	}
+
+
+	private function checkFileHasError($path) {
+		return strpos(file_get_contents($path),"Error: ")!==false;
+	}
+
 
 	/**
 	 * Get the directory size
@@ -280,7 +294,7 @@ class LogViewController {
 
 
 	private function checkPermission() {
-//		return true;
+		return true;
 		if (auth('web')->user() == null)
 			abort(403);
 

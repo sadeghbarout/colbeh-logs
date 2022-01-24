@@ -25,6 +25,19 @@
                                 <button v-if="path != '' " @click="getFiles('')" class="btn btn-outline-info btn-sm float-left">Back</button>
                                 <span v-else  class="text-danger">Folders</span>
                                 <span class="text-danger" v-html="path"></span>
+
+                                <form  v-if="path != '' " class="form-inline float-right">
+                                    <div class="form-check mb-2 mr-sm-2">
+                                        <input class="form-check-input" type="checkbox" id="inlineFormCheck2" v-model="justErrors">
+                                        <label class="form-check-label" for="inlineFormCheck2">
+                                            just errors
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary mb-2 btn-sm" @click.prevent="getFiles(currentFile)">Reload</button>
+                                </form>
+
+
                             </th>
                         </tr>
                         <tr>
@@ -58,10 +71,12 @@
     new Vue({
         el: '#constApp',
         data: {
-                data : [],
+            data : [],
             files : [],
+            currentFile : {},
             maxSize : 0,
             path : '',
+            justErrors:false,
         },
         methods: {
             getClass(fileSize){
@@ -100,12 +115,14 @@
                 axios.get('/log-viewer/file',{
                     params:{
                         'path':file.name,
+                        'just_errors':this.justErrors,
                     }
                 })
                 .then(res=>{
-                    this.files = res.data.files
-                    this.maxSize = res.data.maxSize
-                    this.path = res.data.path
+                    this.currentFile=file;
+                    this.files = res.data.files;
+                    this.maxSize = res.data.maxSize;
+                    this.path = res.data.path;
 
                 })
             },
