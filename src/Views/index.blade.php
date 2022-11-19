@@ -112,6 +112,9 @@
 
 
             getFiles(file){
+                if(file==''){
+                    this.justErrors=false;
+                }
                 axios.get('/log-viewer/file',{
                     params:{
                         'path':file.name,
