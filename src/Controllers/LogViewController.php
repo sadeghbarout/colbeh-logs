@@ -2,6 +2,8 @@
 
 namespace Colbeh\Logs\Controllers;
 
+use Illuminate\Support\Facades\Gate;
+
 class LogViewController {
 
 
@@ -292,13 +294,23 @@ class LogViewController {
 		return $requests;
 	}
 
+	public function laravelLogs() {
+		$this->checkPermission();
+		return (new \Rap2hpoutre\LaravelLogViewer\LogViewerController())->index();
+	}
 
 	private function checkPermission() {
 //		return true;
 		if (auth('web')->user() == null)
 			abort(403);
 
-		auth()->user()->authorizeRoles('superAdmin');
+		if (!(
+			app()->environment('local') ||
+			Gate::check('viewLogs', [request()->user()])
+		)){
+			abort(403);
+
+		}
 
 	}
 
