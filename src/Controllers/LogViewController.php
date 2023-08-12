@@ -14,6 +14,11 @@ class LogViewController {
 
 	}
 
+	public function search() {
+		$this->checkPermission();
+		return view("logsViews::search");
+	}
+
 
 	public function filesList() {
 
@@ -148,7 +153,7 @@ class LogViewController {
 	}
 
 
-	public function showAjax() {
+	public function showAjax($localSearch = false, $path = null) {
 		$this->checkPermission();
 
 		$fullPath = trim(request('path'));
@@ -160,8 +165,39 @@ class LogViewController {
 		$sortDuration = request('sort_duration');
 		$loadedCount = request('loaded_count');
 		$perPage = 10;
+		if(!$localSearch){
+			$fullAddress = storage_path('logs/dailylogs') . "/$fullPath";
+		}else{
+			$fullAddress = $path;
+		}
 
-		$fullAddress = storage_path('logs/dailylogs') . "/$fullPath";
+		if (!strpos($fullPath, '.log') !== false && !$localSearch) {
+			$logsPath = storage_path() . '/logs/dailylogs';
+			$logsFolder = array_diff(scandir($logsPath), ['..', '.']);
+
+			$dates = explode('/', $fullPath);
+			$from = $dates[0];
+			$to = $dates[1];
+
+			$dateSearch = [];
+			foreach ($logsFolder as $logFolder){
+				if($from <= $logFolder && $logFolder <= $to){
+					$dateSearch [] = $logFolder;
+				}
+			}
+			$requests = [];
+			if(count($dateSearch) != 0){
+				foreach ($dateSearch as $item) {
+					$logs = array_diff(scandir("$logsPath/$item"), ['..', '.']);
+					foreach ($logs as $log){
+						$result = json_decode($this->showAjax(true, "$logsPath/$item/$log"), true)['requests'];
+						$requests = array_merge($requests, $result);
+					}
+				}
+			}
+
+			return json_encode(['requests' => $requests, 'fullPath' => "$from/$to"]);
+		}
 
 
 		// add [ again to first of rows
@@ -246,6 +282,13 @@ class LogViewController {
 			$finalRequests = array_values($finalRequests);
 		}
 
+		foreach ($finalRequests as &$finalRequest){
+			if($path != null){
+				$finalRequest['filename'] = $path;
+			}else{
+				$finalRequest['filename'] = storage_path() . '/logs/dailylogs/' . $fullPath;
+			}
+		}
 		$data = json_encode(['requests' => $finalRequests, 'fullPath' => $fullPath]);
 
 		return $data;

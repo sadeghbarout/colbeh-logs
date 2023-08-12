@@ -79,6 +79,8 @@
                             <span>request: @{{req.request}}</span>
                             <br>
                             <span>token: @{{req.token}}</span>
+                            <br>
+                            <span @click="seeFiles(req.filename)">filename: @{{req.filename}}</span>
                         </a>
                     </div>
                     <div :id="'collapse'+i" :class="'collapse '+ (req.response!=undefined?'show':'')" :data-parent="'#accordion'+i">
@@ -157,9 +159,28 @@
                 })
             },
 
+            seeFiles(filename){
+                filename =  filename.split('/')
+                window.location.replace(`/log-viewer/show/${filename[filename.length - 2]}/${filename[filename.length - 1]}`)
+            }
         },
         mounted(){
-            console.log(this.path)
+            const urlParams = new URLSearchParams(window.location.search);
+            const search = urlParams.get('search');
+            if(search != null && search !== ''){
+                this.search = search
+            }
+
+            const show_response = urlParams.get('show_response');
+            if(show_response != null && show_response !== ''){
+                this.showResponse = show_response == 1? true: false
+            }
+
+            const paginate = urlParams.get('paginate');
+            if(paginate != null && paginate !== ''){
+                this.noPaginate = paginate == 1? false: true
+            }
+
             this.getData()
         },
         watch: {

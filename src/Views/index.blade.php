@@ -21,7 +21,9 @@
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr >
-                            <th colspan="3"  >
+                            <th colspan="3" style="position: relative;">
+                                <a v-if="path == ''" href="/log-viewer/search" class="btn btn-sm btn-info" style="position: absolute;left: 10px;">Search</a>
+
                                 <button v-if="path != '' " @click="getFiles('')" class="btn btn-outline-info btn-sm float-left">Back</button>
                                 <span v-else  class="text-danger">Folders</span>
                                 <span class="text-danger" v-html="path"></span>
