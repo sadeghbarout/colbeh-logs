@@ -181,7 +181,7 @@ class LogViewController {
 
 			$dateSearch = [];
 			foreach ($logsFolder as $logFolder){
-				if($from <= $logFolder && $logFolder <= $to){
+				if(strtotime($from) <= strtotime($logFolder) && strtotime($logFolder) <= strtotime($to)){
 					$dateSearch [] = $logFolder;
 				}
 			}
